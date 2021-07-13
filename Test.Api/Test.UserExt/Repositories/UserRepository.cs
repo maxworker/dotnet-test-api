@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using Test.Core.Interfaces;
@@ -19,7 +20,7 @@ namespace Test.UserExt.Repositories
         public IEnumerable<User> Search(string searchString)
         {
 			IQueryable<User> queryable = table;
-			queryable.Where(b => b.FirstName.Contains(searchString) || b.LastName.Contains(searchString));
+			queryable.Where(b => b.FirstName.IndexOf(searchString, 0, StringComparison.InvariantCulture) != -1  || b.LastName.IndexOf(searchString, 0, StringComparison.InvariantCulture) != -1);
 			return queryable.Take(int.MaxValue);
 		}
     }
