@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Web.Http;
 using Microsoft.Owin;
 using Owin;
 
@@ -9,13 +8,20 @@ namespace Test.Api
 {
     public class Startup
     {
-        public void Configuration(IAppBuilder app)
+        public void Configuration(IAppBuilder appBuilder)
         {
-            app.Run(context =>
-            {
-                context.Response.ContentType = "text/html; charset=utf-8";
-                return context.Response.WriteAsync("Test");
-            });
+            var config = new HttpConfiguration();
+            config.MapHttpAttributeRoutes();
+
+            config.Routes.MapHttpRoute(
+                name: "DefaultApi",
+                routeTemplate: "api/{controller}/{id}",
+                defaults: new { id = RouteParameter.Optional }
+            );
+
+            _ = config.Formatters.Remove(config.Formatters.XmlFormatter);
+
+            appBuilder.UseWebApi(config);
         }
     }
 }
